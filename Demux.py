@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 import re
@@ -7,6 +8,12 @@ import sys
 
 ts_pattern = re.compile('^.*\.(\d{4}-\d{2}-\d{2}\.\d{2}-\d{2})\.ts$')
 vdr_pattern = re.compile('^(\d{4}-\d{2}-\d{2}\.\d{2}.\d{2})\.\d{2}\.\d{2}\.rec$')
+
+argparser = argparse.ArgumentParser()
+argparser.add_argument('jobfile', help='JSON file with demux jobs')
+argparser.add_argument('--test', help='test only, do not demux', action="store_true")
+argparser.add_argument('--watch', help='enter watch mode and file until the jobfile exists', action="store_true")
+args = argparser.parse_args()
 
 
 def get_jobs(path, title):
@@ -77,12 +84,14 @@ def process_jobs(jobs, root_dir):
         demux_cmd = ['java', '-jar', '/opt/Project-X_0.91.0/ProjectX.jar']
         demux_cmd.extend(['-out', dest_dir, '-name', name, '-demux'])
         demux_cmd.extend(job['files'])
-        #subprocess.call(demux_cmd)
-        #add_language_to_audio_files(dest_dir, name)
-        print "foo"
+        if args.test:
+            print 'Would execute: ' + ' '.join(demux_cmd)
+        else:
+            subprocess.call(demux_cmd)
+            add_language_to_audio_files(dest_dir, name)
 
 
-job_definition_file_name = sys.argv[1]
+job_definition_file_name = args.jobfile
 with open(job_definition_file_name, 'r') as job_definition_file:
     job_definition = json.load(job_definition_file)
     root_dir = os.path.dirname(job_definition_file_name)

@@ -1,4 +1,5 @@
 #!/bin/bash
 
-docker run -v /Users/oliver/videoschnitt:/mnt/pvr oniekrenz/projectx /mnt/pvr/demuxjob.json
+localdir=${1:?Usage: $0 localdir}
+docker run -v $localdir:/mnt/pvr oniekrenz/docker-tsdemux /mnt/pvr/demuxjob.json
 

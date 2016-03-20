@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker build -t oniekrenz/projectx:latest .
+docker build -t oniekrenz/docker-tsdemux:latest .
 
