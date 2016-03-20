@@ -1,0 +1,4 @@
+#!/bin/bash
+
+docker run -v /Users/oliver/videoschnitt:/mnt/pvr oniekrenz/projectx /mnt/pvr/demuxjob.json
+
