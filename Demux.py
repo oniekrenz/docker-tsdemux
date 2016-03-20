@@ -11,8 +11,8 @@ vdr_pattern = re.compile('^(\d{4}-\d{2}-\d{2}\.\d{2}.\d{2})\.\d{2}\.\d{2}\.rec$'
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('jobfile', help='JSON file with demux jobs')
-argparser.add_argument('--test', help='test only, do not demux', action="store_true")
-argparser.add_argument('--watch', help='enter watch mode and file until the jobfile exists', action="store_true")
+argparser.add_argument('-t', '--test', help='test only, do not demux', action="store_true")
+argparser.add_argument('-w', '--watch', help='enter watch mode and wait until the jobfile exists', action="store_true")
 args = argparser.parse_args()
 
 

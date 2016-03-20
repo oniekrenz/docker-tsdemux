@@ -10,4 +10,4 @@ RUN wget -q -O ProjectX.zip https://sourceforge.net/projects/project-x/files/pro
 RUN mkdir /opt/TsDemuxer
 COPY Demux.py /opt/TsDemuxer
 ENTRYPOINT ["python", "/opt/TsDemuxer/Demux.py"]
-CMD --help
+CMD ["--help"]
