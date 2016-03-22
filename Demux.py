@@ -4,7 +4,6 @@ import os
 import re
 import subprocess
 import time
-import sys
 
 ts_pattern = re.compile('^.*\.(\d{4}-\d{2}-\d{2}\.\d{2}-\d{2})\.ts$')
 vdr_pattern = re.compile('^(\d{4}-\d{2}-\d{2}\.\d{2}.\d{2})\.\d{2}\.\d{2}\.rec$')
@@ -87,13 +86,14 @@ def process_jobs(jobs, root_dir):
         if args.test:
             print 'Would execute: ' + ' '.join(demux_cmd)
         else:
+            print 'Executing: ' + ' '.join(demux_cmd)
             subprocess.call(demux_cmd)
             add_language_to_audio_files(dest_dir, name)
 
 
 job_definition_file_name = args.jobfile
 with open(job_definition_file_name, 'r') as job_definition_file:
-    job_definition = json.load(job_definition_file)
+    job_definition = json.load(job_definition_file, 'UTF-8')
     root_dir = os.path.dirname(job_definition_file_name)
     jobs = create_jobs(job_definition, root_dir)
     process_jobs(jobs, root_dir)
