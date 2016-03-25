@@ -1,9 +1,9 @@
 FROM ubuntu
 MAINTAINER Oliver Niekrenz <oliver@niekrenz.de>
 RUN apt-get update && apt-get install -y \
+  default-jre \
   locales \
   python \
-  default-jre \
   unzip \
   wget
 RUN locale-gen en_US.UTF-8
