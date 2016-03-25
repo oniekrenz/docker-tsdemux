@@ -27,26 +27,27 @@ def get_jobs(path, title):
     else:
         match = vdr_pattern.match(basename)
         if match:
-            files = [os.path.join(path, file) for file in os.listdir(path) if re.match('\d+\.vdr$', file)]
+            files = [os.path.join(path, dir_entry) for dir_entry in os.listdir(path) if
+                     re.match('\d+\.vdr$', dir_entry)]
             files.sort()
             timestamp = time.strptime(match.group(1), '%Y-%m-%d.%H.%M')
             job = {'title': title, 'files': files, 'timestamp': timestamp}
             jobs.append(job)
         else:
-            for file in os.listdir(path):
-                subdir = os.path.join(path, file)
+            for dir_entry in os.listdir(path):
+                subdir = os.path.join(path, dir_entry)
                 jobs.extend(get_jobs(subdir, title))
     return jobs
 
 
 def create_jobs(job_definition, job_definition_dir):
-    rootdir = job_definition['root'] if 'root' in job_definition else job_definition_dir
+    root_dir = job_definition['root'] if 'root' in job_definition else job_definition_dir
     jobs = []
     if 'entries' in job_definition:
         for entry in job_definition['entries']:
             entrydir = entry['dir'] if 'dir' in entry else ''
             title = entry['title'] if 'title' in entry else ''
-            jobs.extend(get_jobs(os.path.join(rootdir, entrydir), title))
+            jobs.extend(get_jobs(os.path.join(root_dir, entrydir), title))
     return jobs
 
 
@@ -92,10 +93,19 @@ def process_jobs(jobs, root_dir):
 
 
 job_definition_file_name = args.jobfile
-current_time = time.strftime('%Y%m%d_%H%M%S')
-with open(job_definition_file_name, 'r') as job_definition_file:
-    job_definition = json.load(job_definition_file, 'UTF-8')
-    args.test or os.rename(job_definition_file_name, job_definition_file_name + '.' + current_time + 'done')
-    root_dir = os.path.dirname(job_definition_file_name)
-    jobs = create_jobs(job_definition, root_dir)
-    process_jobs(jobs, root_dir)
+do_loop = True
+try:
+    while do_loop:
+        if (not args.watch) or os.path.isfile(job_definition_file_name):
+            current_time = time.strftime('%Y%m%d_%H%M%S')
+            with open(job_definition_file_name, 'r') as job_definition_file:
+                job_definition = json.load(job_definition_file, 'UTF-8')
+                os.rename(job_definition_file_name, job_definition_file_name + '.' + current_time + '_done')
+                root_dir = os.path.dirname(job_definition_file_name)
+                jobs = create_jobs(job_definition, root_dir)
+                process_jobs(jobs, root_dir)
+                do_loop = args.watch
+        else:
+            time.sleep(5)
+except KeyboardInterrupt:
+    pass
