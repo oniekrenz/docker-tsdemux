@@ -9,7 +9,7 @@ ts_pattern = re.compile('^.*\.(\d{4}-\d{2}-\d{2}\.\d{2}-\d{2})\.ts$')
 vdr_pattern = re.compile('^(\d{4}-\d{2}-\d{2}\.\d{2}.\d{2})\.\d{2}\.\d{2}\.rec$')
 
 argparser = argparse.ArgumentParser()
-argparser.add_argument('jobfile', help='JSON file with demux jobs')
+argparser.add_argument('jobfile', help='JSON file with demux jobs (UTF-8)')
 argparser.add_argument('-t', '--test', help='test only, do not demux', action="store_true")
 argparser.add_argument('-w', '--watch', help='enter watch mode and wait until the jobfile exists', action="store_true")
 args = argparser.parse_args()
@@ -92,8 +92,10 @@ def process_jobs(jobs, root_dir):
 
 
 job_definition_file_name = args.jobfile
+current_time = time.strftime('%Y%m%d_%H%M%S')
 with open(job_definition_file_name, 'r') as job_definition_file:
     job_definition = json.load(job_definition_file, 'UTF-8')
+    args.test or os.rename(job_definition_file_name, job_definition_file_name + '.' + current_time + 'done')
     root_dir = os.path.dirname(job_definition_file_name)
     jobs = create_jobs(job_definition, root_dir)
     process_jobs(jobs, root_dir)
