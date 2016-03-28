@@ -1,4 +1,4 @@
-# TsDemuxer
+# TsDemux
 
 This docker application batch-demuxes transport streams from PVR programs like [VDR](http://www.tvdr.de/) or [tvheadend](https://tvheadend.org/) by processing them with [Project X](http://project-x.sourceforge.net/).
 
@@ -43,14 +43,14 @@ Pass the `--watch` option to go into continuous watch mode. Useful when the cont
 Given this directory structure
 
     /somedir
-    +- Misery
-    |  +- 2016-03-13.01.05.99.99.rec
+    +- /Misery
+    |  +- /2016-03-13.01.05.99.99.rec
     |     +- 001.vdr
     |     +- 002.vdr
     |     +- 003.vdr
     |     +- index.vdr
     |     +- info.vdr
-    +- Spider-Man
+    +- /Spider-Man
     |  +- Spider-Man.2016-03-19.19-15.ts
     +- demuxjob.json   
          
@@ -73,7 +73,7 @@ you would then start the demuxing with this command
 
     docker run --rm -v /somedir:/mnt/pvr oniekrenz/docker-tsdemux /mnt/pvr/demuxjob.json
 
-and, after a few minutes, might get these additional files
+and, after a few minutes, get these additional files like these
 
     /somedir
     +- Misery (1990)_2016-03-13_01-05_log.txt
@@ -95,3 +95,12 @@ Notice the additional language tags like 'ger' (= German) or 'mul' (multi-purpos
 You may now open them in programs like [Cuttermaran](http://www.cuttermaran.de/) to cut away the advertisements.
 
 Enjoy
+
+
+# ToDo
+
+* 
+* Implement 'Exclude directories' feature
+* Pipe stdout to log file
+* Catch errors
+* Do not rename to '_done' during processing
